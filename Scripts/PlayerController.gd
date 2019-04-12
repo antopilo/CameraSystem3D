@@ -4,49 +4,60 @@ var InputDirection = Vector3(0, 0, 0)
 
 var gravity = -9.8
 var Velocity = Vector3()
-
+onready var camera = get_node("../Camera").global_transform
+var moving = false
 const SPEED = 6
 const ACCELERATION = 3
 const DE_ACCELERATION = 5
-
+const JUMP_FORCE = 9
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	var camera = get_node("../Camera").global_transform
-	var dir = Vector3()
+	camera = get_node("../Camera").global_transform
 	var moving = false
+	InputDirection = Vector3(0, 0, 0)
 	
+	GetInput()
+	Velocity(delta)
+
+	Velocity = move_and_slide(Velocity, Vector3(0,1,0))
+	print(Velocity.y)
+	
+func GetInput():
 	if(Input.is_action_pressed("move_up")):
-		dir += -camera.basis[2]
+		InputDirection += -camera.basis[2]
 		moving = true
 	if(Input.is_action_pressed("move_down")):
-		dir += camera.basis[2]
+		InputDirection += camera.basis[2]
 		moving = true
 	if(Input.is_action_pressed("move_left")):
-		dir += -camera.basis[0]
+		InputDirection += -camera.basis[0]
 		moving = true
 	if(Input.is_action_pressed("move_right")):
-		dir += camera.basis[0]
+		InputDirection += camera.basis[0]
 		moving = true
 		
-	dir.y = 0
-	dir = dir.normalized()
+	if Input.is_action_pressed("Jump") and is_on_floor():
+		Velocity.y += JUMP_FORCE
+		
+func Velocity(delta):
+	InputDirection.y = 0
+	InputDirection = InputDirection.normalized()
 	
 	Velocity.y += delta * gravity
 	
 	var hv = Velocity
 	hv.y = 0
 
-
-	var new_pos = dir * SPEED
+	var new_pos = InputDirection * SPEED
 	var accel = DE_ACCELERATION
 
-	if (dir.dot(hv) > 0):
+	if (InputDirection.dot(hv) > 0):
 		accel = ACCELERATION
-
+	
 	hv = hv.linear_interpolate(new_pos, accel * delta)
 	Velocity.x = hv.x
 	Velocity.z = hv.z
@@ -54,27 +65,6 @@ func _physics_process(delta):
 	if moving:
 		# Rotate the player to direction
 		var angle = atan2(hv.x, hv.z)
-		
 		var char_rot = self.get_rotation()
-		
 		char_rot.y = angle
 		self.set_rotation(char_rot)
-		
-	Velocity = move_and_slide(Velocity, Vector3(0,1,0))
-
-func GetInput():
-	if Input.is_action_pressed("ui_up"):
-		InputDirection.z = -1
-	elif Input.is_action_pressed("ui_down"):
-		InputDirection.z = 1
-	else:
-		InputDirection.z = 0
-		
-	if Input.is_action_pressed("ui_left"):
-		InputDirection.x = -1
-	elif Input.is_action_pressed("ui_right"):
-		InputDirection.x = 1
-	else:
-		InputDirection.x = 0
-		
-	

@@ -61,6 +61,7 @@ depth = 8.34417
 material = ExtResource( 2 )
 
 [node name="Camera" type="InterpolatedCamera" parent="."]
+editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.13212, 0 )
 current = true
 target = NodePath("../Player/CameraTarget")
@@ -69,6 +70,7 @@ enabled = true
 script = ExtResource( 3 )
 
 [node name="PlayerCheck" type="Spatial" parent="Camera"]
+editor/display_folded = true
 
 [node name="Front" type="RayCast" parent="Camera/PlayerCheck"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5 )

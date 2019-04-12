@@ -76,8 +76,6 @@ func CheckDistance(delta):
 		self.transform.origin -= Vector3(0, 0, (rotateSpeed * 2) * delta)
 	
 func CheckPlayer(delta):
-	
-	
 	if !RaycastLedge.is_colliding() && height < MaxHeight:
 		height += rotateSpeed*delta
 		
