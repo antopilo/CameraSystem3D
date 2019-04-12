@@ -20,20 +20,16 @@ onready var RaycastUp = get_node("RaycastUp")
 onready var RaycastLeft = get_node("RaycastLeft")
 onready var RaycastRight = get_node("RaycastRight")
 
-
-
 onready var PlayerCheck = get_node("PlayerCheck")
 onready var RaycastBack = get_node("RaycastBack")
 onready var RaycastLedge = PlayerCheck.get_node("Front")
-onready var RacycastSwiskerL = PlayerCheck.get_node("SwiskerL")
-onready var RacycastSwiskerR = PlayerCheck.get_node("SwiskerR")
+onready var SwiskersLeft = PlayerCheck.get_node("Swiskers/Left")
+onready var SwiskersRight = PlayerCheck.get_node("Swiskers/Right")
 
 var Velocity = Vector3()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
-	
 	CurrentDistance = (Vector3(global_transform.origin.x, 0 , global_transform.origin.z) - get_node(target).global_transform.origin).length()
 	speed = clamp(CurrentDistance - CameraDistance, 0, 5)
 	fov = clamp(((1 / (CurrentDistance / CameraDistance)) * 30) + 55, 55, 90)
@@ -46,57 +42,53 @@ func _process(delta):
 	Rotate(delta)
 	look_at(cam_target.global_transform.origin, up)
 	
+	PlayerCheck.global_transform.origin = Player.global_transform.origin
+	PlayerCheck.rotation_degrees = Vector3(-self.rotation_degrees.x,0,0)
 	
 func CheckCollision(delta):
 	if(RaycastGround.is_colliding()):
 		var raycastlength = (RaycastRight.global_transform.origin -  RaycastRight.get_collision_point()).length()
 		var pushSpeed = (raycastlength / 2) * 10
-		self.global_transform.origin += Vector3(0, pushSpeed * delta, 0 )
+		#RotateCam(pushSpeed, delta)
 		
-	# Spin Right
-	
-	if(RacycastSwiskerL.is_colliding()):
-		var raycastlength = (RacycastSwiskerL.global_transform.origin -  RacycastSwiskerL.get_collision_point()).length()
-		var pushSpeed = (abs(raycastlength) / 3.16) * 5
-		self.transform.origin += (global_transform.basis[0] * pushSpeed) * delta
+	for rc in SwiskersLeft.get_children():
+		if rc.is_colliding():
+			var raycastlength = (rc.global_transform.origin -  rc.get_collision_point()).length()
+			var pushSpeed = ((1 / abs(raycastlength)) ) * 2
+			RotateCam(pushSpeed, delta)
+	for rc in SwiskersRight.get_children():
+		if rc.is_colliding():
+			var raycastlength = (rc.global_transform.origin - rc.get_collision_point()).length()
+			var pushSpeed = ((1 / abs(raycastlength))) * 2
+			RotateCam(-pushSpeed, delta)
+
+	if(RaycastRight.is_colliding()):
+		var raycastlength = (RaycastRight.global_transform.origin - RaycastRight.get_collision_point()).length()
+		var pushSpeed = -((1 / abs(raycastlength)) / 2) * 10
+		RotateCam(pushSpeed, delta)
 	elif(RaycastLeft.is_colliding()):
 		var raycastlength = (RaycastLeft.global_transform.origin -  RaycastLeft.get_collision_point()).length()
-		var pushSpeed = (abs(raycastlength) / 2) * 5
-		self.global_transform.origin -= Vector3(pushSpeed * delta, 0, 0 )
-		print("RaycastLeft!")
-	# Spin Left
-	
-	if(RacycastSwiskerR.is_colliding() && RacycastSwiskerR.get_collision_normal().angle_to(self.global_transform.origin) < 45):
-		var raycastlength = (RacycastSwiskerR.global_transform.origin - RacycastSwiskerR.get_collision_point()).length()
-		var pushSpeed = (abs(raycastlength) / 3.16) * 5
-		self.transform.origin -= (global_transform.basis[0] * pushSpeed) * delta
-	elif(RaycastRight.is_colliding()):
-		var raycastlength = (RaycastRight.global_transform.origin -  RaycastRight.get_collision_point()).length()
-		var pushSpeed = -(abs(raycastlength) / 2) * 5
-		self.global_transform.origin += Vector3(pushSpeed * delta, 0, 0)
-		print("RaycastRight!")
-	#if(RaycastBack.is_colliding()):
-	#	self.global_transform.origin += Vector3(0, 5 * delta, 0)
-	print(".")
+		var pushSpeed = ((1 / abs(raycastlength)) / 2) * 10
+		RotateCam(pushSpeed, delta)
+
 func CheckDistance(delta):
 	if CurrentDistance <= CameraMinDistance:
 		self.transform.origin -= Vector3(0, 0, (rotateSpeed * 2) * delta)
 	
-		
 func CheckPlayer(delta):
-	PlayerCheck.global_transform.origin = Player.global_transform.origin
-	PlayerCheck.rotation_degrees = Vector3(-self.rotation_degrees.x,0,0)
 	
 	
 	if !RaycastLedge.is_colliding() && height < MaxHeight:
 		height += rotateSpeed*delta
 		
-	
+func RotateCam(angle, delta):
+	self.global_transform.origin += global_transform.basis[0] * angle * delta
+
 func Rotate(delta):
-	if Input.is_action_pressed("cam_right"):
-		self.transform.origin += (global_transform.basis[0] * rotateSpeed * 4) * delta
-	elif Input.is_action_pressed("cam_left"):
-		self.transform.origin -= (global_transform.basis[0] * rotateSpeed * 4) * delta
+	if !RaycastLeft.is_colliding() and Input.is_action_pressed("cam_right"):
+		RotateCam(rotateSpeed * 4, delta)
+	elif !RaycastRight.is_colliding() and Input.is_action_pressed("cam_left"):
+		RotateCam(-rotateSpeed * 4, delta)
 	
 	
 	if Input.is_action_pressed("cam_up") and !RaycastUp.is_colliding() && height < MaxHeight:

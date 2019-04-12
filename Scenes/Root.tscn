@@ -9,13 +9,13 @@
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 25, 1, 25 )
 
-[sub_resource type="BoxShape" id=4]
+[sub_resource type="BoxShape" id=2]
 extents = Vector3( 4.15529, 3.08793, 2.44923 )
 
-[sub_resource type="SphereShape" id=2]
+[sub_resource type="SphereShape" id=3]
 radius = 0.934978
 
-[sub_resource type="CapsuleShape" id=3]
+[sub_resource type="CapsuleShape" id=4]
 radius = 0.488407
 
 [node name="Root" type="Spatial"]
@@ -51,7 +51,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.73447, 0 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Level/Wall2"]
 transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 8.15024, -3.15157, -1.11707 )
-shape = SubResource( 4 )
+shape = SubResource( 2 )
 
 [node name="Floor" type="CSGBox" parent="Level/Wall2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15024, -3.15157, -1.11707 )
@@ -75,13 +75,35 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5 )
 enabled = true
 cast_to = Vector3( 0, -4, 0 )
 
-[node name="SwiskerL" type="RayCast" parent="Camera/PlayerCheck"]
+[node name="Swiskers" type="Spatial" parent="Camera/PlayerCheck"]
+
+[node name="Left" type="Spatial" parent="Camera/PlayerCheck/Swiskers"]
+
+[node name="1" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
 enabled = true
 cast_to = Vector3( -1, 0, 3 )
 
-[node name="SwiskerR" type="RayCast" parent="Camera/PlayerCheck"]
+[node name="2" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+enabled = true
+cast_to = Vector3( -2, 0, 2 )
+
+[node name="3" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+enabled = true
+cast_to = Vector3( -3, 0, 1 )
+
+[node name="Right" type="Spatial" parent="Camera/PlayerCheck/Swiskers"]
+
+[node name="1" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
 enabled = true
 cast_to = Vector3( 1, 0, 3 )
+
+[node name="2" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+enabled = true
+cast_to = Vector3( 2, 0, 2 )
+
+[node name="3" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+enabled = true
+cast_to = Vector3( 3, 0, 1 )
 
 [node name="RaycastBack" type="RayCast" parent="Camera"]
 enabled = true
@@ -105,7 +127,7 @@ cast_to = Vector3( -2, 0, 0 )
 [node name="Collision" type="KinematicBody" parent="Camera"]
 
 [node name="Sphere" type="CollisionShape" parent="Camera/Collision"]
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="Player" type="KinematicBody" parent="."]
 editor/display_folded = true
@@ -127,7 +149,7 @@ material = ExtResource( 5 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Player"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-008, -1, 0, 1, -4.37114e-008, 0, 0, 0 )
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="CameraTarget" type="Position3D" parent="Player"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.486004, 0 )
