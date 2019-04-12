@@ -1,0 +1,134 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Materials/Walls.tres" type="Material" id=1]
+[ext_resource path="res://Materials/Floor.tres" type="Material" id=2]
+[ext_resource path="res://Scripts/3rdPersonCamera.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/PlayerController.gd" type="Script" id=4]
+[ext_resource path="res://Materials/Eyes.tres" type="Material" id=5]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 25, 1, 25 )
+
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 4.15529, 3.08793, 2.44923 )
+
+[sub_resource type="SphereShape" id=2]
+radius = 0.934978
+
+[sub_resource type="CapsuleShape" id=3]
+radius = 0.488407
+
+[node name="Root" type="Spatial"]
+
+[node name="Level" type="Spatial" parent="."]
+
+[node name="Wall" type="CSGBox" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
+width = 4.0
+height = 1.0
+depth = 4.0
+material = ExtResource( 1 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Level"]
+transform = Transform( 0.89058, 0.253929, -0.377341, 0, 0.829639, 0.5583, 0.454826, -0.497211, 0.73886, 0, 6.36225, 0 )
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody" parent="Level"]
+editor/display_folded = true
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Floor"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 0, -1, 0 )
+shape = SubResource( 1 )
+
+[node name="Floor" type="CSGBox" parent="Level/Floor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+width = 50.0
+depth = 50.0
+material = ExtResource( 2 )
+
+[node name="Wall2" type="StaticBody" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.73447, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall2"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 8.15024, -3.15157, -1.11707 )
+shape = SubResource( 4 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15024, -3.15157, -1.11707 )
+width = 4.848
+height = 6.1961
+depth = 8.34417
+material = ExtResource( 2 )
+
+[node name="Camera" type="InterpolatedCamera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.13212, 0 )
+current = true
+target = NodePath("../Player/CameraTarget")
+speed = 4.0
+enabled = true
+script = ExtResource( 3 )
+
+[node name="PlayerCheck" type="Spatial" parent="Camera"]
+
+[node name="Front" type="RayCast" parent="Camera/PlayerCheck"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5 )
+enabled = true
+cast_to = Vector3( 0, -4, 0 )
+
+[node name="SwiskerL" type="RayCast" parent="Camera/PlayerCheck"]
+enabled = true
+cast_to = Vector3( -1, 0, 3 )
+
+[node name="SwiskerR" type="RayCast" parent="Camera/PlayerCheck"]
+enabled = true
+cast_to = Vector3( 1, 0, 3 )
+
+[node name="RaycastBack" type="RayCast" parent="Camera"]
+enabled = true
+cast_to = Vector3( 0, 0, 2 )
+
+[node name="RaycastGround" type="RayCast" parent="Camera"]
+enabled = true
+
+[node name="RaycastUp" type="RayCast" parent="Camera"]
+enabled = true
+cast_to = Vector3( 0, 1, 0 )
+
+[node name="RaycastRight" type="RayCast" parent="Camera"]
+enabled = true
+cast_to = Vector3( 2, 0, 0 )
+
+[node name="RaycastLeft" type="RayCast" parent="Camera"]
+enabled = true
+cast_to = Vector3( -2, 0, 0 )
+
+[node name="Collision" type="KinematicBody" parent="Camera"]
+
+[node name="Sphere" type="CollisionShape" parent="Camera/Collision"]
+shape = SubResource( 2 )
+
+[node name="Player" type="KinematicBody" parent="."]
+editor/display_folded = true
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.478, 0 )
+script = ExtResource( 4 )
+
+[node name="Model" type="CSGCylinder" parent="Player"]
+radius = 0.5
+height = 2.0
+
+[node name="Face" type="CSGBox" parent="Player/Model"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.37408 )
+width = 0.541816
+height = 0.307893
+depth = 0.567439
+material = ExtResource( 5 )
+
+[node name="Raycasts" type="Spatial" parent="Player/Model"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Player"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-008, -1, 0, 1, -4.37114e-008, 0, 0, 0 )
+shape = SubResource( 3 )
+
+[node name="CameraTarget" type="Position3D" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.486004, 0 )
+
