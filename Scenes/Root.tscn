@@ -1,16 +1,24 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://Materials/Walls.tres" type="Material" id=1]
-[ext_resource path="res://Materials/Floor.tres" type="Material" id=2]
-[ext_resource path="res://Scripts/3rdPersonCamera.gd" type="Script" id=3]
-[ext_resource path="res://Scripts/PlayerController.gd" type="Script" id=4]
-[ext_resource path="res://Materials/Eyes.tres" type="Material" id=5]
+[ext_resource path="res://Materials/Floor.tres" type="Material" id=1]
+[ext_resource path="res://Scripts/3rdPersonCamera.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/PlayerController.gd" type="Script" id=3]
+[ext_resource path="res://Materials/Eyes.tres" type="Material" id=4]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 25, 1, 25 )
 
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 4.15529, 3.08793, 2.44923 )
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 4.15529, 0.472305, 2.44923 )
+
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 4.15529, 0.398053, 2.44923 )
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 2.46269, 0.342284, 2.44923 )
 
 [sub_resource type="SphereShape" id=3]
 radius = 0.934978
@@ -21,13 +29,6 @@ radius = 0.488407
 [node name="Root" type="Spatial"]
 
 [node name="Level" type="Spatial" parent="."]
-
-[node name="Wall" type="CSGBox" parent="Level"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0 )
-width = 4.0
-height = 1.0
-depth = 4.0
-material = ExtResource( 1 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="Level"]
 transform = Transform( 0.89058, 0.253929, -0.377341, 0, 0.829639, 0.5583, 0.454826, -0.497211, 0.73886, 0, 6.36225, 0 )
@@ -44,10 +45,10 @@ shape = SubResource( 1 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
 width = 50.0
 depth = 50.0
-material = ExtResource( 2 )
+material = ExtResource( 1 )
 
 [node name="Wall2" type="StaticBody" parent="Level"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.73447, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.726397, 1.67583, 4.91992 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Level/Wall2"]
 transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 8.15024, -3.15157, -1.11707 )
@@ -58,19 +59,87 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15024, -3.15157, -1.11707 )
 width = 4.848
 height = 6.1961
 depth = 8.34417
-material = ExtResource( 2 )
+material = ExtResource( 1 )
+
+[node name="Wall3" type="StaticBody" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.79932, 3.1364, 9.39787 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall3"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 8.15024, -3.15157, -1.11707 )
+shape = SubResource( 2 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15024, -3.15157, -1.11707 )
+width = 4.848
+height = 6.1961
+depth = 8.34417
+material = ExtResource( 1 )
+
+[node name="Wall5" type="StaticBody" parent="Level"]
+transform = Transform( -4.37114e-008, 0.416678, -0.909054, 0, 0.909054, 0.416678, 1, 1.82136e-008, -3.9736e-008, 3.91474, 4.83796, 0.428211 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall5"]
+transform = Transform( -4.37114e-008, 0, -0.999999, -1.51987e-015, 1, -1.06581e-014, 1, -7.23734e-016, -4.37114e-008, 8.15023, -0.424404, 0.13296 )
+shape = SubResource( 6 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall5"]
+transform = Transform( 0.999999, 0, 0, 1.77636e-015, 1, -7.23734e-016, 2.13163e-014, -7.23734e-016, 1, 8.15023, -0.424405, 0.13296 )
+width = 4.848
+height = 0.888147
+depth = 8.34417
+material = ExtResource( 1 )
+
+[node name="Wall7" type="StaticBody" parent="Level"]
+transform = Transform( -1, -3.64271e-008, 7.94721e-008, 0, 0.909054, 0.416678, -8.74228e-008, 0.416678, -0.909054, 6.44199, 7.83796, 4.8264 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall7"]
+transform = Transform( -4.37114e-008, -3.55271e-015, -1, -2.98023e-008, 1, -1.42109e-014, 1, 2.98023e-008, -4.37114e-008, 8.15023, -0.424408, 0.13296 )
+shape = SubResource( 7 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall7"]
+transform = Transform( 0.999999, 0, 0, 1.77636e-015, 1, -7.23734e-016, 2.13163e-014, -7.23734e-016, 1, 8.15023, -0.424405, 0.13296 )
+width = 4.848
+height = 0.888147
+depth = 8.34417
+material = ExtResource( 1 )
+
+[node name="Wall4" type="StaticBody" parent="Level"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.9562, 6.74858, 11.3536 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall4"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 8.15024, -3.15157, -1.11707 )
+shape = SubResource( 2 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15024, -3.15157, -1.11707 )
+width = 4.848
+height = 6.1961
+depth = 8.34417
+material = ExtResource( 1 )
+
+[node name="Wall6" type="StaticBody" parent="Level"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, -4.48345, 9.74858, -9.04454 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Level/Wall6"]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 7.44632, -0.514949, -2.83589 )
+shape = SubResource( 8 )
+
+[node name="Floor" type="CSGBox" parent="Level/Wall6"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.53582, -0.430599, -2.77076 )
+width = 4.848
+height = 0.658151
+depth = 4.85154
+material = ExtResource( 1 )
 
 [node name="Camera" type="InterpolatedCamera" parent="."]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.13212, 0 )
 current = true
 target = NodePath("../Player/CameraTarget")
 speed = 4.0
 enabled = true
-script = ExtResource( 3 )
+script = ExtResource( 2 )
 
 [node name="PlayerCheck" type="Spatial" parent="Camera"]
-editor/display_folded = true
 
 [node name="Front" type="RayCast" parent="Camera/PlayerCheck"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5 )
@@ -78,38 +147,55 @@ enabled = true
 cast_to = Vector3( 0, -4, 0 )
 
 [node name="Swiskers" type="Spatial" parent="Camera/PlayerCheck"]
+editor/display_folded = true
 
 [node name="Left" type="Spatial" parent="Camera/PlayerCheck/Swiskers"]
 
 [node name="1" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( -1, 0, 3 )
 
 [node name="2" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( -2, 0, 2 )
 
 [node name="3" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( -3, 0, 1 )
+
+[node name="4" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Left"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
+enabled = true
+cast_to = Vector3( -2.65, 0, 1.6 )
 
 [node name="Right" type="Spatial" parent="Camera/PlayerCheck/Swiskers"]
 
 [node name="1" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( 1, 0, 3 )
 
 [node name="2" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( 2, 0, 2 )
 
 [node name="3" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( 3, 0, 1 )
 
+[node name="4" type="RayCast" parent="Camera/PlayerCheck/Swiskers/Right"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
+enabled = true
+cast_to = Vector3( 2.65, 0, 1.6 )
+
 [node name="RaycastBack" type="RayCast" parent="Camera"]
 enabled = true
-cast_to = Vector3( 0, 0, 2 )
+cast_to = Vector3( 0, 0, 1 )
 
 [node name="RaycastGround" type="RayCast" parent="Camera"]
 enabled = true
@@ -120,11 +206,11 @@ cast_to = Vector3( 0, 1, 0 )
 
 [node name="RaycastRight" type="RayCast" parent="Camera"]
 enabled = true
-cast_to = Vector3( 2, 0, 0 )
+cast_to = Vector3( 1, 0, 0 )
 
 [node name="RaycastLeft" type="RayCast" parent="Camera"]
 enabled = true
-cast_to = Vector3( -2, 0, 0 )
+cast_to = Vector3( -1, 0, 0 )
 
 [node name="Collision" type="KinematicBody" parent="Camera"]
 
@@ -134,7 +220,7 @@ shape = SubResource( 3 )
 [node name="Player" type="KinematicBody" parent="."]
 editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.478, 0 )
-script = ExtResource( 4 )
+script = ExtResource( 3 )
 
 [node name="Model" type="CSGCylinder" parent="Player"]
 radius = 0.5
@@ -145,7 +231,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.37408 )
 width = 0.541816
 height = 0.307893
 depth = 0.567439
-material = ExtResource( 5 )
+material = ExtResource( 4 )
 
 [node name="Raycasts" type="Spatial" parent="Player/Model"]
 
@@ -155,4 +241,6 @@ shape = SubResource( 4 )
 
 [node name="CameraTarget" type="Position3D" parent="Player"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.486004, 0 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 

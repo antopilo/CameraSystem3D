@@ -7,8 +7,9 @@ var up = Vector3(0,1,0)
 var rotateSpeed = 2
 var CurrentDistance = 0
 var height = 3
-var MaxHeight = 12
+var MaxHeight = 5
 var height_from_ground = 2
+var playerAjusted = false
 
 # References
 onready var Player = get_node("../Player")
@@ -30,16 +31,21 @@ var Velocity = Vector3()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	CurrentDistance = (Vector3(global_transform.origin.x, 0 , global_transform.origin.z) - get_node(target).global_transform.origin).length()
+	CurrentDistance = (Vector3(global_transform.origin.x, 0 , global_transform.origin.z) - 
+		Vector3(cam_target.global_transform.origin.x,0 , cam_target.global_transform.origin.z)).length()
 	speed = clamp(CurrentDistance - CameraDistance, 0, 5)
-	fov = clamp(((1 / (CurrentDistance / CameraDistance)) * 30) + 55, 55, 90)
+	fov = clamp(((1 / (MaxHeight / height)) * MaxHeight * 2) + 55, 55, 90)
+	
 	
 	CheckCollision(delta)
 	CheckDistance(delta)
 	CheckPlayer(delta)
 	
-	self.transform.origin = Vector3(self.transform.origin.x, cam_target.transform.origin.y + height,self.transform.origin.z)
 	Rotate(delta)
+	CameraDistance = height
+	fov = 1 / height * 40 + 60
+	fov = clamp(fov, 55, 100)
+	self.transform.origin = Vector3(self.transform.origin.x, PlayerCheck.global_transform.origin.y + height,self.transform.origin.z)
 	look_at(cam_target.global_transform.origin, up)
 	
 	PlayerCheck.global_transform.origin = Player.global_transform.origin
@@ -49,17 +55,19 @@ func CheckCollision(delta):
 	if(RaycastGround.is_colliding()):
 		var raycastlength = (RaycastRight.global_transform.origin -  RaycastRight.get_collision_point()).length()
 		var pushSpeed = (raycastlength / 2) * 10
-		#RotateCam(pushSpeed, delta)
 		
 	for rc in SwiskersLeft.get_children():
+		rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
 		if rc.is_colliding():
 			var raycastlength = (rc.global_transform.origin -  rc.get_collision_point()).length()
-			var pushSpeed = ((1 / abs(raycastlength)) ) * 2
+			var pushSpeed = (1 / abs(raycastlength)) * 2
 			RotateCam(pushSpeed, delta)
 	for rc in SwiskersRight.get_children():
+		rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
 		if rc.is_colliding():
 			var raycastlength = (rc.global_transform.origin - rc.get_collision_point()).length()
-			var pushSpeed = ((1 / abs(raycastlength))) * 2
+			var pushSpeed = (1 / abs(raycastlength)) * 2
+			var col_point = rc.get_collision_point()
 			RotateCam(-pushSpeed, delta)
 
 	if(RaycastRight.is_colliding()):
@@ -72,24 +80,26 @@ func CheckCollision(delta):
 		RotateCam(pushSpeed, delta)
 
 func CheckDistance(delta):
-	if CurrentDistance <= CameraMinDistance:
+	if CurrentDistance < CameraMinDistance:
 		self.transform.origin -= Vector3(0, 0, (rotateSpeed * 2) * delta)
 	
 func CheckPlayer(delta):
-	if !RaycastLedge.is_colliding() && height < MaxHeight:
-		height += rotateSpeed*delta
+	if !playerAjusted and !RaycastLedge.is_colliding() && height < MaxHeight && Player.is_on_floor():
+		height += rotateSpeed * delta
 		
 func RotateCam(angle, delta):
 	self.global_transform.origin += global_transform.basis[0] * angle * delta
 
 func Rotate(delta):
 	if !RaycastLeft.is_colliding() and Input.is_action_pressed("cam_right"):
-		RotateCam(rotateSpeed * 4, delta)
-	elif !RaycastRight.is_colliding() and Input.is_action_pressed("cam_left"):
 		RotateCam(-rotateSpeed * 4, delta)
-	
-	
+		playerAjusted = true
+	elif !RaycastRight.is_colliding() and Input.is_action_pressed("cam_left"):
+		RotateCam(rotateSpeed * 4, delta)
+		playerAjusted = true
 	if Input.is_action_pressed("cam_up") and !RaycastUp.is_colliding() && height < MaxHeight:
 		height += rotateSpeed * delta
+		playerAjusted = true
 	elif Input.is_action_pressed("cam_down") and !RaycastGround.is_colliding():
 		height -= rotateSpeed * delta
+		playerAjusted = true

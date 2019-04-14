@@ -2,7 +2,7 @@ extends KinematicBody
 
 var InputDirection = Vector3(0, 0, 0)
 
-var gravity = -9.8
+var gravity = -16
 var Velocity = Vector3()
 onready var camera = get_node("../Camera").global_transform
 var moving = false
@@ -24,21 +24,25 @@ func _physics_process(delta):
 	Velocity(delta)
 
 	Velocity = move_and_slide(Velocity, Vector3(0,1,0))
-	print(Velocity.y)
+
 	
 func GetInput():
 	if(Input.is_action_pressed("move_up")):
 		InputDirection += -camera.basis[2]
 		moving = true
+		get_node("../Camera").playerAjusted = false
 	if(Input.is_action_pressed("move_down")):
 		InputDirection += camera.basis[2]
 		moving = true
+		get_node("../Camera").playerAjusted = false
 	if(Input.is_action_pressed("move_left")):
 		InputDirection += -camera.basis[0]
 		moving = true
+		get_node("../Camera").playerAjusted = false
 	if(Input.is_action_pressed("move_right")):
 		InputDirection += camera.basis[0]
 		moving = true
+		get_node("../Camera").playerAjusted = false
 		
 	if Input.is_action_pressed("Jump") and is_on_floor():
 		Velocity.y += JUMP_FORCE
