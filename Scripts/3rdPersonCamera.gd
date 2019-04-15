@@ -31,75 +31,74 @@ var Velocity = Vector3()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	
+	
+	
 	CurrentDistance = (Vector3(global_transform.origin.x, 0 , global_transform.origin.z) - 
-		Vector3(cam_target.global_transform.origin.x,0 , cam_target.global_transform.origin.z)).length()
-	speed = clamp(CurrentDistance - CameraDistance, 0, 5)
+		Vector3(cam_target.global_transform.origin.x, 0, cam_target.global_transform.origin.z)).length()
+	
+	CheckPlayer(delta)
+	speed = CurrentDistance - CameraDistance
 	fov = clamp(((1 / (MaxHeight / height)) * MaxHeight * 2) + 55, 55, 90)
 	
-	
 	CheckCollision(delta)
-	CheckDistance(delta)
-	CheckPlayer(delta)
 	
 	Rotate(delta)
-	CameraDistance = height
-	fov = 1 / height * 40 + 60
-	fov = clamp(fov, 55, 100)
-	self.transform.origin = Vector3(self.transform.origin.x, PlayerCheck.global_transform.origin.y + height,self.transform.origin.z)
-	look_at(cam_target.global_transform.origin, up)
 	
+	
+	
+	
+	transform.origin.y = cam_target.global_transform.origin.y + height
+	look_at(cam_target.global_transform.origin, up)
 	PlayerCheck.global_transform.origin = Player.global_transform.origin
 	PlayerCheck.rotation_degrees = Vector3(-self.rotation_degrees.x,0,0)
-	
-func CheckCollision(delta):
+	Swiskers(delta)
+func Swiskers(delta):
 	if(RaycastGround.is_colliding()):
 		var raycastlength = (RaycastRight.global_transform.origin -  RaycastRight.get_collision_point()).length()
 		var pushSpeed = (raycastlength / 2) * 10
-		
 	for rc in SwiskersLeft.get_children():
-		rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
-		if rc.is_colliding():
+		#rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
+		if rc.is_colliding() and rc.get_collider() != Player:
 			var raycastlength = (rc.global_transform.origin -  rc.get_collision_point()).length()
 			var pushSpeed = (1 / abs(raycastlength)) * 2
 			RotateCam(pushSpeed, delta)
 	for rc in SwiskersRight.get_children():
-		rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
-		if rc.is_colliding():
+		#rc.scale = Vector3(CameraDistance / 6, CameraDistance / 6, CameraDistance / 6)
+		if rc.is_colliding() and rc.get_collider() != Player:
 			var raycastlength = (rc.global_transform.origin - rc.get_collision_point()).length()
 			var pushSpeed = (1 / abs(raycastlength)) * 2
 			var col_point = rc.get_collision_point()
 			RotateCam(-pushSpeed, delta)
 
+func CheckCollision(delta):
+	
 	if(RaycastRight.is_colliding()):
 		var raycastlength = (RaycastRight.global_transform.origin - RaycastRight.get_collision_point()).length()
 		var pushSpeed = -((1 / abs(raycastlength)) / 2) * 10
 		RotateCam(pushSpeed, delta)
-	elif(RaycastLeft.is_colliding()):
+	if(RaycastLeft.is_colliding()):
 		var raycastlength = (RaycastLeft.global_transform.origin -  RaycastLeft.get_collision_point()).length()
 		var pushSpeed = ((1 / abs(raycastlength)) / 2) * 10
 		RotateCam(pushSpeed, delta)
 
 func CheckDistance(delta):
-	if CurrentDistance < CameraMinDistance:
-		self.transform.origin -= Vector3(0, 0, (rotateSpeed * 2) * delta)
-	
+	if CurrentDistance < CameraDistance:
+		transform.origin -= Vector3(0, 0, rotateSpeed * delta)
+		
 func CheckPlayer(delta):
 	if !playerAjusted and !RaycastLedge.is_colliding() && height < MaxHeight && Player.is_on_floor():
 		height += rotateSpeed * delta
-		
+
 func RotateCam(angle, delta):
-	self.global_transform.origin += global_transform.basis[0] * angle * delta
+	global_transform.origin += global_transform.basis[0] * angle * delta
 
 func Rotate(delta):
 	if !RaycastLeft.is_colliding() and Input.is_action_pressed("cam_right"):
 		RotateCam(-rotateSpeed * 4, delta)
-		playerAjusted = true
 	elif !RaycastRight.is_colliding() and Input.is_action_pressed("cam_left"):
 		RotateCam(rotateSpeed * 4, delta)
-		playerAjusted = true
 	if Input.is_action_pressed("cam_up") and !RaycastUp.is_colliding() && height < MaxHeight:
 		height += rotateSpeed * delta
-		playerAjusted = true
 	elif Input.is_action_pressed("cam_down") and !RaycastGround.is_colliding():
 		height -= rotateSpeed * delta
-		playerAjusted = true

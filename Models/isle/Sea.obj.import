@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Sea.obj-778fe71f91513913918658480dfd6082.mesh"
+
+[deps]
+
+files=[ "res://.import/Sea.obj-778fe71f91513913918658480dfd6082.mesh" ]
+
+source_file="res://Models/isle/Sea.obj"
+dest_files=[ "res://.import/Sea.obj-778fe71f91513913918658480dfd6082.mesh", "res://.import/Sea.obj-778fe71f91513913918658480dfd6082.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true
